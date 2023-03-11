@@ -8,13 +8,6 @@ population_size = 10
 total_generations = 10
 max = 1000
 
-cities = {"P": "Peshawar",
-          "I": "Islamabad",
-          "S": "Sialkot",
-          "K": "Karachi",
-          "L": "Lahore",
-          "M": "Multan"}
-
 position = {"P": 0,
             "I": 1,
             "S": 2,
@@ -104,9 +97,7 @@ def ordered_crossover(parent_1, parent_2, crossover_start, crossover_end):
             
     offspring.extend(offspring[0])
     path = "".join(offspring)
-    
     new_genome = genome(path, fitness(path))
-    
     return new_genome
 
 def mutation(chromosome):
@@ -126,9 +117,9 @@ def mutation(chromosome):
         offspring[position_1] = offspring[position_2]
         offspring[position_2] = temp
     
-    path = "".join(offspring) 
-        
-    new_offspring = genome(path + path[0], fitness(path)) 
+    offspring.extend(offspring[0]) 
+    path = "".join(offspring)    
+    new_offspring = genome(path, fitness(path))
     return new_offspring
 
 
@@ -162,10 +153,7 @@ def main():
     for i in genomes:    
         i.fitness = fitness(i.path)
         population.append(i)
-        
-    for i in range(len(population)):
-        print("Population: \n", population[i].path, population[i].fitness)
-    
+ 
     score = total_population_score(population)
     
     generations = 1
