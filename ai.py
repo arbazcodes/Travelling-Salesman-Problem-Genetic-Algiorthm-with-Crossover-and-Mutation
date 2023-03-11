@@ -75,28 +75,30 @@ def tournament_selection(population, number):
 
 def ordered_crossover(parent_1, parent_2):
     
-    p1_path = list(parent_1.path[0:6])
-    p2_path = list(parent_2.path[0:6])
+    p1_path = list(parent_1.path[0:len(parent_1.path) - 1])
+    p2_path = list(parent_2.path[0:len(parent_1.path) - 1])
+    offspring = []
     
-    new_genome = ['x','x','x','x','x','x']
-    new_genome[2:5] = p1_path[2:5]
+    for i in range(len(p1_path)):
+        offspring.extend("x")
     
-    print(p1_path, p2_path, new_genome)
-    
+    offspring[2:5] = p1_path[2:5]
+     
     i = 5
     j = 0
-    while 'x' in new_genome:
+    while 'x' in offspring:
     
         if i < 6:
-            if  p2_path[i] not in new_genome:
-                new_genome[i] = p2_path[i]
+            if  p2_path[i] not in offspring and j < 6:
+                offspring[j] = p2_path[i]
+                j += 1
             i += 1
         else:
             i = 0
             
-    new_genome.extend(new_genome[0])
-    print("New genome", new_genome)
-    return str(new_genome)
+    offspring.extend(offspring[0])
+    path = "".join(offspring)
+    return offspring
 
 def mutation(chromosome):
     
