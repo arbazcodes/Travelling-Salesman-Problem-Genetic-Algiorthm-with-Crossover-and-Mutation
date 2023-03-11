@@ -1,4 +1,5 @@
 from random import randint
+import random
 
 #graph
 
@@ -24,6 +25,8 @@ graph = [[0, 20, float('inf'), 250, float('inf'), 100],
          [250, float('inf'), 200, 0, 180, float('inf')],
          [float('inf'), 40, float('inf'), 180, 0, 90],
          [100, float('inf'), float('inf'), float('inf'), 90, 0]]
+
+mutation_rate = 3
 
 class genome:
   def __init__(self, _path, _fitness):
@@ -68,6 +71,55 @@ def tournament_selection(population, number):
              
     population.sort( key=lambda x: x.fitness)                               
     return population[0:number] 
+
+
+def ordered_crossover(parent_1, parent_2):
+    
+    p1_path = list(parent_1.path[0:6])
+    p2_path = list(parent_2.path[0:6])
+    
+    new_genome = ['x','x','x','x','x','x']
+    new_genome[2:5] = p1_path[2:5]
+    
+    print(p1_path, p2_path, new_genome)
+    
+    i = 5
+    j = 0
+    while 'x' in new_genome:
+    
+        if i < 6:
+            if  p2_path[i] not in new_genome:
+                new_genome[i] = p2_path[i]
+            i += 1
+        else:
+            i = 0
+            
+    new_genome.extend(new_genome[0])
+    print("New genome", new_genome)
+    return str(new_genome)
+
+def mutation(chromosome):
+    
+    offspring = []
+    possible_postions = []
+    for i in range(len(chromosome.path) - 1):
+        offspring.extend(chromosome.path[i])
+    
+    for i in range(len(offspring)):  
+        possible_postions.append(i)
+    
+    for i in range(mutation_rate):
+        
+        position_1, position_2 = random.sample(possible_postions, 2)
+        temp = offspring[position_1]
+        offspring[position_1] = offspring[position_2]
+        offspring[position_2] = temp
+    
+    path = "".join(offspring) 
+        
+    new_offspring = genome(path + path[0], fitness(path)) 
+    return new_offspring
+     
                 
 def main():
     g1 = genome("PISKLMP", 0)
@@ -92,6 +144,14 @@ def main():
         
         print(selected[i].path , selected[i].fitness)
         
+     
+    new_genome = ordered_crossover(initial_population[0], initial_population[1])
+    
+    print (new_genome)
+    
+    mutated_offspring = mutation(initial_population[0])
+    
+    print(mutated_offspring.path)
         
 if __name__ == "__main__":
     main()
