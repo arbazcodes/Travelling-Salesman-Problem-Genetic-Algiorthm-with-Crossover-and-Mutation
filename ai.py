@@ -73,24 +73,13 @@ def tournament_selection(population, number):
     return population[0:number] 
 
 
-def ordered_crossover(parent_1, parent_2):
-    
-    p1_path = list(parent_1.path[0:len(parent_1.path) - 1])
-    p2_path = list(parent_2.path[0:len(parent_1.path) - 1])
-    offspring = []
-    
-    for i in range(len(p1_path)):
-        offspring.extend("x")
-    
-    offspring[2:5] = p1_path[2:5]
-     
-    i = 5
-    j = 0
+def crossover(offspring, i, j, path):
+
     while 'x' in offspring:
     
-        if i < 6:
-            if  p2_path[i] not in offspring and j < 6:
-                offspring[j] = p2_path[i]
+        if i < len(path):
+            if  path[i] not in offspring and j < len(offspring):
+                offspring[j] = path[i]
                 j += 1
             i += 1
         else:
@@ -98,7 +87,39 @@ def ordered_crossover(parent_1, parent_2):
             
     offspring.extend(offspring[0])
     path = "".join(offspring)
-    return offspring
+    
+    return path
+
+def ordered_crossover(parent_1, parent_2, crossover_start, crossover_end):
+    
+    p1_path = list(parent_1.path[0:len(parent_1.path) - 1])
+    p2_path = list(parent_2.path[0:len(parent_1.path) - 1])
+    offspring_1 = []
+    offspring_2 = []
+    
+    
+    for i in range(len(p1_path)):
+        offspring_1.extend("x")
+        offspring_2.extend("x")
+    
+    offspring_1[crossover_start:crossover_end] = p1_path[crossover_start:crossover_end]
+    offspring_2[crossover_start:crossover_end] = p2_path[crossover_start:crossover_end]
+     
+    i = crossover_end
+    j = 0
+    while 'x' in offspring_1:
+    
+        if i < len(p2_path):
+            if  p2_path[i] not in offspring_1 and j < len(offspring_1):
+                offspring_1[j] = p2_path[i]
+                j += 1
+            i += 1
+        else:
+            i = 0
+            
+    offspring_1.extend(offspring_1[0])
+    path = "".join(offspring_1)
+    return offspring_1
 
 def mutation(chromosome):
     
@@ -147,7 +168,7 @@ def main():
         print(selected[i].path , selected[i].fitness)
         
      
-    new_genome = ordered_crossover(initial_population[0], initial_population[1])
+    new_genome = ordered_crossover(initial_population[0], initial_population[1], 2, 5)
     
     print (new_genome)
     
