@@ -23,4 +23,4 @@ graph = [[0, 20, float('inf'), 250, float('inf'), 100],
          [float('inf'), 40, float('inf'), 180, 0, 90],
          [100, float('inf'), float('inf'), float('inf'), 90, 0]]
 
-
+initial_population = ["PISKLMP", "LISKPML", "ILMPKSI", "KPMLISK", "SIPMLKS"]
