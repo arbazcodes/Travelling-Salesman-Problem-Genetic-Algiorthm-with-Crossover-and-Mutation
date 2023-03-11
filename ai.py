@@ -24,3 +24,19 @@ graph = [[0, 20, float('inf'), 250, float('inf'), 100],
          [100, float('inf'), float('inf'), float('inf'), 90, 0]]
 
 initial_population = ["PISKLMP", "LISKPML", "ILMPKSI", "KPMLISK", "SIPMLKS"]
+
+def fitness(genome):
+    
+    total_distance = 0
+    
+    for i in range(len(genome)-1):
+        
+        if graph[position[genome[i]]][position[genome[i+1]]] == float('inf'):
+            
+            return float('inf')
+        
+        else: 
+            
+            total_distance += graph[position[genome[i]]][position[genome[i+1]]]
+        
+    return total_distance
