@@ -1,3 +1,5 @@
+from random import randint
+
 #graph
 
 cities = {"P": "Peshawar",
@@ -23,7 +25,10 @@ graph = [[0, 20, float('inf'), 250, float('inf'), 100],
          [float('inf'), 40, float('inf'), 180, 0, 90],
          [100, float('inf'), float('inf'), float('inf'), 90, 0]]
 
-initial_population = ["PISKLMP", "LISKPML", "ILMPKSI", "KPMLISK", "SIPMLKS"]
+class genome:
+  def __init__(self, _path, _fitness):
+    self.path = _path
+    self.fitness = _fitness
 
 def fitness(genome):
     
@@ -40,3 +45,53 @@ def fitness(genome):
             total_distance += graph[position[genome[i]]][position[genome[i+1]]]
         
     return total_distance
+
+
+
+def select_population(population, number): 
+    
+    selected = []
+
+    while (len(selected) < number):
+
+        value = randint(0, len(population)-1)
+        
+        if population[value] not in selected:
+
+            selected.append(population[value])
+        
+    return selected
+
+
+
+def tournament_selection(population, number):
+             
+    population.sort( key=lambda x: x.fitness)                               
+    return population[0:number] 
+                
+def main():
+    g1 = genome("PISKLMP", 0)
+    g2 = genome("LISKPML", 0)
+    g3 = genome("ILMPKSI", 0)
+    g4 = genome("KPMLISK", 0)
+    g5 = genome("SIPMLKS", 0)
+
+    initial_population = []
+
+    genomes = [g1, g2, g3, g4, g5]
+
+    for i in genomes:    
+        
+        i.fitness = fitness(i.path)
+        
+        initial_population.append(i)
+        
+    selected = tournament_selection(initial_population, 3)
+
+    for i in range(3):    
+        
+        print(selected[i].path , selected[i].fitness)
+        
+        
+if __name__ == "__main__":
+    main()
