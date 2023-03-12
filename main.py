@@ -44,13 +44,18 @@ The code defines several functions to implement the genetic algorithm, including
 from random import randint
 import random
 
-# Initialize Parameters.
-mutation_rate = 3
-population_size = 100
-total_generations = 10
-selection_pressure = 5
-threshhold = 600
 max = 1000
+
+
+# Initialize Parameters.
+
+population_size = 100
+maximum_generations = 10
+mutation_rate = 1
+selection_pressure = 5
+convergance_rate = 95
+threshhold = population_size * max * (convergance_rate/100)
+
 
 # Initialize Graph.
 
@@ -72,17 +77,21 @@ graph = [[0, 20, max, 250, max, 100],
          [max, 40, max, 180, 0, 90],
          [100, max, max, max, 90, 0]]
 
+
 # Define genome class.
 # Includes the path taken and fitness.
 # Fitness is calculated the total distance travelled on a given path .
+
 class genome:
     def __init__(self, _path, _fitness):
         self.path = _path
         self.fitness = _fitness
 
+
 # Define fitness function.
 # Calculates fitness by adding the distance between all the neigbouring cities in the genome,
 # and return the total distance traversed in a given path.
+
 def fitness(genome):
 
     total_distance = 0
@@ -100,7 +109,9 @@ def fitness(genome):
 
     return total_distance
 
+
 # Function to return a random sample of genomes from a given population.
+
 def select_population(population, number):
 
     selected = []
@@ -115,16 +126,20 @@ def select_population(population, number):
 
     return selected
 
+
 # Define Tournament Selection function.
 # Return the a certain number of fittest individuals in a given population.
+
 def tournament_selection(population, number):
 
     population.sort(key=lambda x: x.fitness)
     fittest = population[0:number]
     return fittest
 
+
 # Define ordered crossover function.
 # Apply ordered cross (OX) on a genome and return the newly generated genome.
+
 def ordered_crossover(parent_1, parent_2, crossover_start, crossover_end):
 
     p1_path = list(parent_1.path[0:len(parent_1.path) - 1])
@@ -154,8 +169,10 @@ def ordered_crossover(parent_1, parent_2, crossover_start, crossover_end):
     new_genome = genome(path, fitness(path))
     return new_genome
 
+
 # Define Mutatuion Function.
 # Apply mutation by replacing a random order of cities and return the newly generated genome.
+
 def mutation(chromosome):
 
     offspring = []
@@ -178,7 +195,9 @@ def mutation(chromosome):
     new_offspring = genome(path, fitness(path))
     return new_offspring
 
+
 # Calculate the total score of the population by adding all of their fitness scores.
+
 def total_population_score(population):
 
     score = 0
@@ -186,89 +205,100 @@ def total_population_score(population):
     for individual in population:
         score += individual.fitness
 
-    return score
+    return float(score)
+
 
 # Function to generate a random path
+
 def generate_path(cities):
     start_city = random.choice(cities)
     remaining_cities = [city for city in cities if city != start_city]
     random.shuffle(remaining_cities)
     end_city = start_city
     path = [start_city]
-    
+
     for i in range(len(remaining_cities)):
         if i == 6:
             break
         city = remaining_cities[i]
         if city != end_city:
             path.append(city)
-    
+
     path.append(end_city)
     return ''.join(path)
 
+
 # Function to initialize a random population
+
 def initialize_population(population_size, cities):
     population = []
-    
+
     for i in range(population_size):
         path = generate_path(cities)
         individual = genome(path, fitness(path))
         population.append(individual)
-        
+
     return population
 
+
 # Main Function
+
 def main():
-    
+
     # Initialize a population
-    
+
     population = initialize_population(population_size, cities)
 
     score = total_population_score(population)
 
     generations = 1
+    
+    fittest = []
 
     # Apply genetic algorithm until a maximum number of generations is reached or the poplation score is not less than threshhold.
-    while (generations <= total_generations) and (score > threshhold):
-
+    while (generations <= maximum_generations) and (score > threshhold):
+        
         print("\n\nGeneration: ", generations)
         print("Score: ", score)
 
-        fittest = tournament_selection(population, selection_pressure)
+        fittest_genomes = tournament_selection(population, selection_pressure)
 
-        # Print fittest individuals after selection.
-        print("\nFittest:\nPATH\t\tFITNESS")
-        for i in fittest:
-            print(i.path,"\t",i.fitness)
+        # Print fittest_genomes individuals after selection.
+        print("\nfittest_genomes:\nPATH\t\tFITNESS")
+        for i in fittest_genomes:
+            print(i.path, "\t", i.fitness)
 
         new_generation = []
         possible_parents = []
-        for i in range(len(fittest)):
+
+        for i in range(len(fittest_genomes)):
             possible_parents.append(i)
 
-        for i in range(population_size-len(fittest)):
+        for i in range(population_size-len(fittest_genomes)):
 
             parent_1, parent_2 = random.sample(possible_parents, 2)
             new_offspring = ordered_crossover(
-                fittest[parent_1], fittest[parent_2], 2, 5)
+                fittest_genomes[parent_1], fittest_genomes[parent_2], 2, 5)
             mutated_new_offspring = mutation(new_offspring)
             new_generation.append(mutated_new_offspring)
 
-        for i in range(len(fittest)):
-            mutated_new_offspring = mutation(fittest[i])
-            new_generation.append(fittest[i])
-            
+        for i in range(len(fittest_genomes)):
+            mutated_new_offspring = mutation(fittest_genomes[i])
+            new_generation.append(mutated_new_offspring)
+
         # Print the new generation.
         print("\nNew Generation:\nPATH\t\tFITNESS")
         for i in new_generation:
-            print(i.path,"\t",i.fitness)
+            print(i.path, "\t", i.fitness)
 
         population = new_generation
         score = total_population_score(population)
         generations += 1
+        
 
     # Print the shorted distance found by the genetic algorithm.
-    print("Shortest Distance Found:", fittest[0].path, fittest[0].fitness)
+    fittest_genomes.sort(key=lambda x: x.fitness)
+    print("Shortest Distance Found:", fittest_genomes[0].path, fittest_genomes[0].fitness)
 
 
 if __name__ == "__main__":
