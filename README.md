@@ -1,4 +1,4 @@
-# Travelling-Salesman-Problem-Genetic-Algiorthm-with-Crossover-and-Mutation
+# Travelling Salesman Problem-Genetic Algiorthm with Crossover and Mutation
 
 ### This code implements a genetic algorithm to solve the travelling salesman problem for a given graph. The algorithm works as follows:
 
