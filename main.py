@@ -5,7 +5,8 @@ import random
 mutation_rate = 3
 population_size = 100
 total_generations = 10
-selection_pressure = 2
+selection_pressure = 5
+threshhold = 600
 max = 1000
 
 # Initialize Graph.
@@ -185,15 +186,17 @@ def main():
     generations = 1
 
     # Apply genetic algorithm until a maximum number of generations is reached or the poplation score is not less than threshhold.
-    while (generations <= total_generations) and (score > 600):
+    while (generations <= total_generations) and (score > threshhold):
 
-        print("Generation: ", generations)
+        print("\n\nGeneration: ", generations)
         print("Score: ", score)
 
         fittest = tournament_selection(population, selection_pressure)
 
+        # Print fittest individuals after selection.
+        print("\nFittest:\nPATH\t\tFITNESS")
         for i in fittest:
-            print("Fittest\n", i.path, i.fitness)
+            print(i.path,"\t",i.fitness)
 
         new_generation = []
         possible_parents = []
@@ -211,9 +214,11 @@ def main():
         for i in range(len(fittest)):
             mutated_new_offspring = mutation(fittest[i])
             new_generation.append(fittest[i])
-
+            
+        # Print the new generation.
+        print("\nNew Generation:\nPATH\t\tFITNESS")
         for i in new_generation:
-            print("New Generation\n", i.path, i.fitness)
+            print(i.path,"\t",i.fitness)
 
         population = new_generation
         score = total_population_score(population)
