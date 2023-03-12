@@ -53,7 +53,7 @@ population_size = 100
 maximum_generations = 10
 mutation_rate = 1
 selection_pressure = 5
-convergance_rate = 95
+convergance_rate = 96
 threshhold = population_size * max * (convergance_rate/100)
 
 
@@ -256,7 +256,7 @@ def main():
     fittest = []
 
     # Apply genetic algorithm until a maximum number of generations is reached or the poplation score is not less than threshhold.
-    while (generations <= maximum_generations) and (score > threshhold):
+    while True:
         
         print("\n\nGeneration: ", generations)
         print("Score: ", score)
@@ -264,7 +264,7 @@ def main():
         fittest_genomes = tournament_selection(population, selection_pressure)
 
         # Print fittest_genomes individuals after selection.
-        print("\nfittest_genomes:\nPATH\t\tFITNESS")
+        print("\nFittest Genomes:\nPATH\t\tFITNESS")
         for i in fittest_genomes:
             print(i.path, "\t", i.fitness)
 
@@ -290,15 +290,20 @@ def main():
         print("\nNew Generation:\nPATH\t\tFITNESS")
         for i in new_generation:
             print(i.path, "\t", i.fitness)
-
+        # Terminating condition
+        if(score <= threshhold or generations == maximum_generations):
+            
+            # Print the generation number and the shorted distance found by the genetic algorithm.
+            print("\n\nGeneration: ",generations,"/",maximum_generations)
+            fittest_genomes.sort(key=lambda x: x.fitness)
+            print("Shortest Distance Found:", fittest_genomes[0].path, fittest_genomes[0].fitness)
+            break
+        
         population = new_generation
         score = total_population_score(population)
         generations += 1
-        
 
-    # Print the shorted distance found by the genetic algorithm.
-    fittest_genomes.sort(key=lambda x: x.fitness)
-    print("Shortest Distance Found:", fittest_genomes[0].path, fittest_genomes[0].fitness)
+    
 
 
 if __name__ == "__main__":
