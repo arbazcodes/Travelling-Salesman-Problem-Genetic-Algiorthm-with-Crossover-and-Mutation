@@ -3,12 +3,17 @@ import random
 
 # Initialize Parameters.
 mutation_rate = 3
-total_cities = 6
-population_size = 10
+population_size = 100
 total_generations = 10
+selection_pressure = 2
 max = 1000
 
 # Initialize Graph.
+
+total_cities = 6
+
+cities = "PISKLM"
+
 position = {"P": 0,
             "I": 1,
             "S": 2,
@@ -139,27 +144,41 @@ def total_population_score(population):
 
     return score
 
+# Function to generate a random path
+def generate_path(cities):
+    start_city = random.choice(cities)
+    remaining_cities = [city for city in cities if city != start_city]
+    random.shuffle(remaining_cities)
+    end_city = start_city
+    path = [start_city]
+    
+    for i in range(len(remaining_cities)):
+        if i == 6:
+            break
+        city = remaining_cities[i]
+        if city != end_city:
+            path.append(city)
+    
+    path.append(end_city)
+    return ''.join(path)
+
+# Function to initialize a random population
+def initialize_population(population_size, cities):
+    population = []
+    
+    for i in range(population_size):
+        path = generate_path(cities)
+        individual = genome(path, fitness(path))
+        population.append(individual)
+        
+    return population
+
 # Main Function
 def main():
     
     # Initialize a population
-    g1 = genome("PISKLMP", 0)
-    g2 = genome("IPMLKSI", 0)
-    g3 = genome("KSILMPK", 0)
-    g4 = genome("LISKPML", 0)
-    g5 = genome("SILKPMS", 0)
-    g6 = genome("SKLMPIS", 0)
-    g7 = genome("MLKSIPM", 0)
-    g8 = genome("ILMPKSI", 0)
-    g9 = genome("LISKPML", 0)
-    g10 = genome("MLKPISM", 0)
-
-    genomes = [g1, g2, g3, g4, g5, g6, g7, g8, g9, g10]
-    population = []
-
-    for i in genomes:
-        i.fitness = fitness(i.path)
-        population.append(i)
+    
+    population = initialize_population(population_size, cities)
 
     score = total_population_score(population)
 
@@ -171,7 +190,7 @@ def main():
         print("Generation: ", generations)
         print("Score: ", score)
 
-        fittest = tournament_selection(population, 5)
+        fittest = tournament_selection(population, selection_pressure)
 
         for i in fittest:
             print("Fittest\n", i.path, i.fitness)
