@@ -98,7 +98,7 @@ def fitness(genome):
 
     for i in range(len(genome)-1):
 
-        # if there is no path between the two cities return max, else add it to the
+        # if there is no path between the two cities return max, else add it to the total distance travelled.
         if graph[position[genome[i]]][position[genome[i+1]]] == max:
 
             return max
@@ -128,7 +128,7 @@ def select_population(population, number):
 
 
 # Define Tournament Selection function.
-# Return the a certain number of fittest individuals in a given population.
+# Return a certain number of fittest individuals in a given population.
 
 def tournament_selection(population, number):
 
@@ -208,7 +208,7 @@ def total_population_score(population):
     return float(score)
 
 
-# Function to generate a random path
+# Function to generate a random path.
 
 def generate_path(cities):
     start_city = random.choice(cities)
@@ -228,7 +228,7 @@ def generate_path(cities):
     return ''.join(path)
 
 
-# Function to initialize a random population
+# Function to initialize a random population.
 
 def initialize_population(population_size, cities):
     population = []
@@ -245,7 +245,7 @@ def initialize_population(population_size, cities):
 
 def main():
 
-    # Initialize a population
+    # Initialize a population.
 
     population = initialize_population(population_size, cities)
 
@@ -255,7 +255,7 @@ def main():
     
     fittest = []
 
-    # Apply genetic algorithm until a maximum number of generations is reached or the poplation score is not less than threshhold.
+    # Apply genetic algorithm until a maximum number of generations is reached or the population score is greater than threshhold.
     while True:
         
         print("\n\nGeneration: ", generations)
@@ -263,7 +263,7 @@ def main():
 
         fittest_genomes = tournament_selection(population, selection_pressure)
 
-        # Print fittest_genomes individuals after selection.
+        # Print Fittest Genomes after selection.
         print("\nFittest Genomes:\nPATH\t\tFITNESS")
         for i in fittest_genomes:
             print(i.path, "\t", i.fitness)
@@ -290,7 +290,8 @@ def main():
         print("\nNew Generation:\nPATH\t\tFITNESS")
         for i in new_generation:
             print(i.path, "\t", i.fitness)
-        # Terminating condition
+            
+        # Stopping Criterion.
         if(score <= threshhold or generations == maximum_generations):
             
             # Print the generation number and the shorted distance found by the genetic algorithm.
